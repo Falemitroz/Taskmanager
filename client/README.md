@@ -1,70 +1,134 @@
-# Getting Started with Create React App
+# TaskManager
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+TaskManager è un'applicazione per la gestione delle attività, sviluppata con **React** per il frontend, **Node.js** ed **Express** per il backend, e **Sequelize** per la gestione del database.
 
-## Available Scripts
+## 🚀 Guida all'installazione e all'avvio
 
-In the project directory, you can run:
+Se hai appena clonato questa repository o vuoi eseguire il progetto sul tuo computer, segui questi passaggi.
 
-### `npm start`
+### 1. Clonare il repository
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Per prima cosa, clona il repository sul tuo computer utilizzando il comando:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+git clone https://github.com/Falemitroz/TaskManager.git
+cd TaskManager
+```
 
-### `npm test`
+### 2. Installare le dipendenze
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Il progetto è composto dal frontend e dal backend, ognuno con le proprie dipendenze.
 
-### `npm run build`
+🖥 Frontend (Client)
+1. Per installare le dipendenze (dove si trova il frontend in React) vai nella 
+cartella client con questo comando:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+cd client
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Una volta dentro la cartella client, installa tutte le dipendenze necessarie con il comando:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm install
+```
 
-### `npm run eject`
+3. Dopo aver installato le dipendenze, avvia il client con:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Il server di sviluppo del client React si avvierà e potrai accedere all'applicazione tramite il browser all'indirizzo:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+http://localhost:3000
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+⚙️ Backend (Server)
 
-## Learn More
+1. Ora, torna alla cartella principale del progetto ed entra nella cartella server dove si trova il backend in Node.js e Express:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+cd ../server
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. Esegui i passaggi 2 e 3 come hai fatto per il client
 
-### Code Splitting
+Il server Express inizierà a girare e potrai accedere al backend all'indirizzo:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+http://localhost:5000
 
-### Analyzing the Bundle Size
+### 3. Configurare il Database
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Questo progetto utilizza PostgreSQL come database e Sequelize come ORM (Object-Relational Mapping) per la gestione delle query.
 
-### Making a Progressive Web App
+1. Per prima cosa, assicurati di avere PostgreSQL installato e in esecuzione sul tuo computer. Se non ce l'hai, puoi scaricarlo da https://www.postgresql.org/download/
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+2. Crea un database vuoto nel tuo PostgreSQL per l'applicazione. Puoi farlo con il comando:
 
-### Advanced Configuration
+```bash
+createdb taskmanager
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+3. Una volta creato il database, apri il file di configurazione di Sequelize. Si trova nella cartella server/config/database.js. Qui dovrai inserire le credenziali del tuo database. Ecco un esempio di come dovrebbe essere configurato:
 
-### Deployment
+```json
+{
+  "development": {
+    "username": "your_db_user",
+    "password": "your_db_password",
+    "database": "taskmanager",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Assicurati di sostituire your_db_user e your_db_password con le tue credenziali per PostgreSQL.
 
-### `npm run build` fails to minify
+4. Ora, per creare tutte le tabelle nel database, dovrai eseguire le migrazioni. Esegui il seguente comando:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+npx sequelize-cli db:migrate
+```
+
+### 4. Avviare l'Applicazione
+
+Ora che hai configurato correttamente il progetto, puoi avviare sia il frontend che il backend.
+
+🖥 Per avviare il client, spostati nella cartella client ed esegui:
+
+```bash
+npm start
+```
+
+⚙️ Per avviare il frontend, spostati nella cartella server ed esegui lo stesso comando.
+
+### 5. Verifiche finali
+
+ A questo punto, se hai seguito correttamente i passaggi precedenti, dovresti essere in grado di interagire con l'applicazione. Il frontend comunica con il backend tramite le API esposte, e il database PostgreSQL gestisce i dati delle attività.
+
+ #### 📦 Dipendenze ####
+1. Frontend (Client)
+    React: per la creazione dell'interfaccia utente.
+    React Router: per la gestione della navigazione.
+    Axios: per le richieste HTTP al server.
+
+2. Backend (Server)
+    Express: per la gestione delle route e del server.
+    Sequelize: per l'interazione con il database.
+    jsonwebtoken: per la gestione dei token di autenticazione.
+    bcrypt: per la crittografia delle password.
+    pg e pg-hstore: per l'interazione con PostgreSQL.
+
+#### ⚠️ Note Importanti ####
+1. Assicurati di avere Node.js e npm installati sul tuo computer. Puoi verificare la tua versione di Node.js con il comando:
+
+```bash
+node -v
+```
+
+Se non li hai, scarica e installa Node.js da https://nodejs.org/en
+
+2. Verifica che PostgreSQL sia correttamente installato e in esecuzione. Puoi scaricarlo da https://www.postgresql.org/download/
+
+3. Se hai problemi con la configurazione del database, assicurati che le credenziali nel file config/database.js siano corrette e che il database taskmanager esista nel tuo ambiente PostgreSQL.
