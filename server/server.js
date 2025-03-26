@@ -31,7 +31,7 @@ const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 
 app.use("/auth", authRoutes);
-app.use("/api/task", taskRoutes);
+app.use("/api/tasks", taskRoutes);
 
 // Test della connessione al database
 db.sequelize.authenticate()

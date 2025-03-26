@@ -5,10 +5,10 @@ const authMiddleware = require("../middleware/authMiddleware");
 const taskController = require("../controllers/taskController");
 
 // Aggiungi il middleware di autenticazione alle rotte che necessitano di login
-router.post("/", authMiddleware, taskController.create);          // Crea una task
-router.patch("/:taskId", authMiddleware, taskController.update);   // Aggiorna una task
-router.delete("/:taskId", authMiddleware, taskController.delete); // Elimina una task
-router.get("/", authMiddleware, taskController.getAll);           // Ottieni tutte le task
-router.get("/:title", authMiddleware, taskController.getByTitle); // Ottieni task per titolo
+router.post("/create", authMiddleware, taskController.create);          // Crea una task
+router.get("/user/:userId", authMiddleware, taskController.getAll);           // Ottieni tutte le task
+router.get("/title/:title", authMiddleware, taskController.getByTitle); // Ottieni task per titolo
+router.patch("/update/:taskId", authMiddleware, taskController.update);   // Aggiorna una task
+router.delete("/delete/:taskId", authMiddleware, taskController.delete); // Elimina una task
 
 module.exports = router;

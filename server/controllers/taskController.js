@@ -10,10 +10,6 @@ exports.create = async (req, res) => {
             return res.status(401).json({ error: "Non autorizzato" });
         }
 
-        console.log("Title:", title);
-        console.log("Description:", description);
-        console.log("UserId:", userId);
-
         const newTask = await Task.create({ title, description, userId });
         res.status(201).json({ message: "Task created", newTask });
     } catch (error) {
@@ -79,8 +75,6 @@ exports.update = async (req, res) => {
             return res.status(404).json({ error: "Task non trovata o non autorizzato" });
         }
 
-        console.log("Dati ricevuti dal client:", { taskId, title, description, completed });
-
         if (title) task.title = title;
         if (description) task.description = description;
         if (completed !== undefined) task.completed = completed;
@@ -102,8 +96,6 @@ exports.delete = async (req, res) => {
         if (!userId) {
             return res.status(401).json({ error: "Non autorizzato" });
         }
-
-        console.log("Delete: taskId:", taskId);
 
         const task = await Task.findOne({ where: { id: taskId, userId } });
 
