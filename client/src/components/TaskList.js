@@ -4,7 +4,7 @@ import AuthContext from "../context/AuthContext";
 // import '../styles/TaskList.css';
 
 const TaskList = () => {
-  const { get_Tasks, get_TaskByTitle } = useContext(AuthContext);
+  const { getTasks, getTaskByTitle } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
   const [tasksCopy, setTasksCopy] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,16 +13,17 @@ const TaskList = () => {
 
   useEffect(() => {
     const fetchTasks = async () => {
-      const response = await get_Tasks();
+      const response = await getTasks();
       if (response) {
-        setTasks(response);
-        setTasksCopy(response);
+        const sortedTasks = response.sort((a, b) => a.title.localeCompare(b.title));
+        setTasks(sortedTasks);
+        setTasksCopy(sortedTasks);
       }
       setLoading(false);
     };
 
     fetchTasks();
-  }, [get_Tasks]);
+  }, [getTasks]);
 
   const searchTask = async (e) => {
     e.preventDefault();
@@ -30,9 +31,10 @@ const TaskList = () => {
       setTasks(tasksCopy); // Se la ricerca è vuota, ripristina tutti i task
     } else {
       setLoading(true);
-      const response = await get_TaskByTitle(title);
+      const response = await getTaskByTitle(title);
       if (response) {
-        setTasks(response); // Mostra i task trovati
+        const sortedTasks = response.sort((a, b) => a.title.localeCompare(b.title));
+        setTasks(sortedTasks); // Mostra i task trovati
       } else {
         setTasks(tasksCopy); // Se nessun task trovato, ripristina la lista completa
       }
@@ -41,13 +43,14 @@ const TaskList = () => {
   };
 
   const updateTaskList = async () => {
-    const updatedTasks = await get_Tasks();
-    setTasks(updatedTasks);
-    setTasksCopy(updatedTasks);
+    const updatedTasks = await getTasks();
+    const sortedTasks = updatedTasks.sort((a, b) => a.title.localeCompare(b.title));
+    setTasks(sortedTasks);
+    setTasksCopy(sortedTasks);
   };
 
   return (
-    <div className="task-list">
+    <div>
       <h2>Task List</h2>
       <form onSubmit={searchTask}>
         <input 

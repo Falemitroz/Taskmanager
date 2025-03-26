@@ -1,0 +1,24 @@
+.notification {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    animation: fadeIn 1s ease-out;
+  }
+  
+  .notification.success {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .notification.error {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  

@@ -1,15 +1,14 @@
 import React, { useContext, useState, useEffect } from "react";
 import AuthContext from "../context/AuthContext";
 import { FaPencil } from "react-icons/fa6";
-// import '../styles/TaskForm.css';
 
 const TaskForm = ({ task, updateTaskList }) => {
-  const { create_Task, update_Task, delete_Task } = useContext(AuthContext);
+  const { createTask, updateTask, deleteTask } = useContext(AuthContext);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [completed, setCompleted] = useState(false);
-  const [update, setUpdate] = useState("");
+  const [title, setTitle] = useState(task?.title || "");
+  const [description, setDescription] = useState(task?.description || "");
+  const [completed, setCompleted] = useState(task?.completed || false);
+  const [editingField, setEditingField] = useState(null); // Per gestire quale campo modificare
 
   useEffect(() => {
     if (task) {
@@ -19,113 +18,93 @@ const TaskForm = ({ task, updateTaskList }) => {
     }
   }, [task]);
 
-  const createTask = async (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
-    await create_Task(title, description);
+    await createTask(title, description);
+    resetForm();
+    updateTaskList();
+  };
+
+  const handleUpdate = async (field, value) => {
+    const updatedTask = { id: task.id, [field]: value };
+    await updateTask(updatedTask.id, updatedTask.title, updatedTask.description, updatedTask.completed);
+    updateTaskList();
+    setEditingField(null); // Esci dalla modalità di modifica
+  };
+
+  const handleDelete = async () => {
+    await deleteTask(task.id);
+    updateTaskList();
+  };
+
+  const resetForm = () => {
     setTitle("");
     setDescription("");
-    updateTaskList(); // Aggiorna la lista dopo la creazione
   };
 
-  const updateTask = async (e, field) => {
-    e.preventDefault();
-    setUpdate("");
-    let updatedTask = { id: task.id };
+  const renderInput = (value, setter, placeholder) => (
+    <input
+      type="text"
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => setter(e.target.value)}
+      required
+    />
+  );
 
-    if (field === "title") {
-      updatedTask.title = title;
-    } else if (field === "description") {
-      updatedTask.description = description;
-    } else if (field === "completed") {
-      const newCompletedState = e.target.checked;
-      setCompleted(newCompletedState);
-      updatedTask.completed = newCompletedState;
-    }
-
-    await update_Task(updatedTask.id, updatedTask.title, updatedTask.description, updatedTask.completed);
-    updateTaskList(); // Aggiorna la lista dopo l'aggiornamento
-  };
-
-  const deleteTask = async () => {
-    await delete_Task(task.id);
-    updateTaskList(); // Aggiorna la lista dopo la cancellazione
-  };
-
-  function newTaskForm() {
-    return (
-      <form className="task-form">
-        <h1><strong>Aggiungi una nuova task</strong> </h1>
-        {renderInput()}
-        {renderTextarea()}
-        <button onClick={createTask}>Conferma</button>
-      </form>
-    );
-  }
-
-  function renderTask() {
-    return (
-      <div className="task-form">
-        {update === "updateTitle" ? (
-          <form onSubmit={(e) => updateTask(e, "title")}>
-            {renderInput()}
-          </form>
-        ) : (
-          <>
-            <h1><strong>{title}</strong></h1>
-            <FaPencil onClick={() => setUpdate("updateTitle")} />
-          </>
-        )}
-
-        {update === "updateDescription" ? (
-          <form>
-            {renderTextarea()}
-            <button onClick={(e) => updateTask(e, "description")}>Salva modifiche</button>
-          </form>
-        ) : (
-          <>
-            <p>{description}</p>
-            <FaPencil onClick={() => setUpdate("updateDescription")} />
-          </>
-        )}
-
-        <label>
-          <input
-            type="checkbox"
-            checked={completed}
-            onChange={(e) => updateTask(e, "completed")}
-          />
-          Completato
-        </label>
-        <button onClick={deleteTask}>Elimina</button>
-      </div>
-    );
-  }
-
-  function renderInput() {
-    return (
-      <input
-        type="text"
-        placeholder="Titolo"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
-    );
-  }
-
-  function renderTextarea() {
-    return (
-      <textarea
-        placeholder="Descrizione"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-    );
-  }
+  const renderTextarea = (value, setter) => (
+    <textarea
+      placeholder="Descrizione"
+      value={value}
+      onChange={(e) => setter(e.target.value)}
+    />
+  );
 
   return (
     <div>
-      {!task ? (<>{newTaskForm()}</>) : (<>{renderTask()}</>)}
+      {task ? (
+        <>
+          {editingField === "title" ? (
+            <form onSubmit={(e) => { e.preventDefault(); handleUpdate("title", title); }}>
+              {renderInput(title, setTitle, "Titolo")}
+            </form>
+          ) : (
+            <>
+              <h1><strong>{title}</strong></h1>
+              <FaPencil onClick={() => setEditingField("title")} />
+            </>
+          )}
+
+          {editingField === "description" ? (
+            <form onSubmit={(e) => { e.preventDefault(); handleUpdate("description", description); }}>
+              {renderTextarea(description, setDescription)}
+              <button type="submit">Salva modifiche</button>
+            </form>
+          ) : (
+            <>
+              <p>{description}</p>
+              <FaPencil onClick={() => setEditingField("description")} />
+            </>
+          )}
+
+          <label>
+            <input
+              type="checkbox"
+              checked={completed}
+              onChange={() => handleUpdate("completed", !completed)}
+            />
+            Completato
+          </label>
+          <button onClick={handleDelete}>Elimina</button>
+        </>
+      ) : (
+        <form onSubmit={handleCreate}>
+          <h1><strong>Aggiungi una nuova task</strong></h1>
+          {renderInput(title, setTitle, "Titolo")}
+          {renderTextarea(description, setDescription)}
+          <button type="submit">Conferma</button>
+        </form>
+      )}
     </div>
   );
 };

@@ -1,78 +1,89 @@
-import axios from 'axios';
+import axios from "axios";
 
-const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+const API_URL = "http://localhost:5001/api/tasks";
 
-// Funzione per ottenere il token dal localStorage
-const getAuthHeader = () => {
-    const token = localStorage.getItem("token");
-    return token ? { Authorization: `${token}`} : {};
+/**
+ * Helper function to set Authorization header if token is available
+ */
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return token ? { Authorization: `${token}` } : {};
 };
 
+/**
+ * Creates a new task
+ */
 export const createTask = async (title, description, userId) => {
-    try {
-        const response = await axios.post(
-            `${baseURL}/task`,
-            { title, description, userId },
-            { headers: getAuthHeader() } // 🔹 Aggiunto token nell'header
-        );
-        return response.data; 
-    } catch (error) {
-        console.error('❌ Errore nella creazione del task:', error);
-        throw error;
-    }
+  try {
+    const res = await axios.post(
+      `${API_URL}/create`,
+      { title, description, userId },
+      { headers: getAuthHeaders() }
+    );
+    return res.data;
+  } catch (error) {
+    console.error("Errore durante la creazione del task:", error);
+    throw error;
+  }
 };
 
+/**
+ * Retrieves tasks for a specific user
+ */
 export const getTasks = async (userId) => {
-    try {
-        const response = await axios.get(`${baseURL}/task`, { 
-            params: { userId },
-            headers: getAuthHeader() // 🔹 Aggiunto token nell'header
-        });
-
-        console.log("✅ Risposta ricevuta:", response.data);
-        return response.data;
-    } catch (error) {
-        console.error("❌ Errore nella richiesta getTasks:", error);
-        throw error;
-    }
+  try {
+    const res = await axios.get(`${API_URL}/user/${userId}`, {
+      headers: getAuthHeaders(),
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Errore durante il recupero dei task:", error);
+    throw error;
+  }
 };
 
+/**
+ * Retrieves a task by title
+ */
 export const getTaskByTitle = async (title) => {
-    try {
-        const response = await axios.get(`${baseURL}/task/${title}`, {
-            headers: getAuthHeader() // 🔹 Aggiunto token nell'header
-        });
-
-        console.log("✅ Risposta ricevuta:", response.data);
-        return response.data;
-    } catch (error) {
-        console.error("❌ Errore nella richiesta getTaskByTitle:", error);
-        throw error;
-    }
+  try {
+    const res = await axios.get(`${API_URL}/title/${title}`, {
+      headers: getAuthHeaders(),
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Errore durante la ricerca del task:", error);
+    throw error;
+  }
 };
 
-export const updateTask = async (taskId, updatedData) => {
-    console.log("Dati da inviare alla API:", { updatedData });
-    try {
-        const response = await axios.patch(`${baseURL}/task/${taskId}`, updatedData, {
-            headers: getAuthHeader() // 🔹 Aggiunto token nell'header
-        });
-        console.log("✅ Response della API:", response.data);
-        return response.data;
-    } catch (error) {
-        console.error("❌ Errore nella richiesta updateTask:", error);
-        throw error;
-    }
+/**
+ * Updates a task
+ */
+export const updateTask = async (taskId, title, description, completed) => {
+  try {
+    const res = await axios.patch(`${API_URL}/update/${taskId}`, 
+      { title, description, completed }, {
+      headers: getAuthHeaders(),
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Errore durante l'aggiornamento del task:", error);
+    throw error;
+  }
 };
 
+/**
+ * Deletes a task
+ */
 export const deleteTask = async (taskId) => {
-    try {
-        const response = await axios.delete(`${baseURL}/task/${taskId}`, {
-            headers: getAuthHeader() // 🔹 Aggiunto token nell'header
-        });
-        console.log("✅ Task eliminata:", response.data);
-    } catch (error) {
-        console.error("❌ Errore nell'eliminazione della task:", error);
-        throw error;
-    }
+  try {
+    const res = await axios.delete(`${API_URL}/delete/${taskId}`, {
+      headers: getAuthHeaders(),
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Errore durante l'eliminazione del task:", error);
+    throw error;
+  }
 };
