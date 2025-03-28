@@ -1,7 +1,8 @@
 import { createContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import { createTask, getTasks, getTaskByTitle, updateTask, deleteTask } from "../services/api";
+import { createTask, getTasks, getTaskByTitle, updateTask, deleteTask, updateTaskStatus } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -13,6 +14,8 @@ export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState(localStorage.getItem("token"));
   const baseURL = "http://localhost:5001/auth";
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
@@ -56,11 +59,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setToken(null);
-    setUser({ id: null, username: null });
+  const logout = async () => {
+    try {
+      await axios.post(`${baseURL}/logout`, {}, { withCredentials: true });
+  
+      localStorage.removeItem("token"); // Rimuove il token JWT
+      localStorage.removeItem("user");
+      setUser(null);
+      setToken(null);
+      setUser({ id: null, username: null });
+      navigate("/");
+    } catch (error) {
+      console.error("Errore durante il logout:", error);
+    }
+
+
   };
 
   const handleTaskAction = async (action, ...args) => {

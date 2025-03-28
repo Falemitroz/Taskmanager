@@ -1,35 +1,41 @@
 import React, { useContext, useState, useEffect } from "react";
 import AuthContext from "../context/AuthContext";
 import { FaPencil } from "react-icons/fa6";
+import "../styles/TaskForm.css"; // Import del CSS
 
 const TaskForm = ({ task, updateTaskList }) => {
   const { createTask, updateTask, deleteTask } = useContext(AuthContext);
 
-  const [title, setTitle] = useState(task?.title || "");
-  const [description, setDescription] = useState(task?.description || "");
-  const [completed, setCompleted] = useState(task?.completed || false);
-  const [editingField, setEditingField] = useState(null); // Per gestire quale campo modificare
+  // Stato unificato per tutti i campi
+  const [fields, setFields] = useState({
+    title: task?.title || "",
+    description: task?.description || "",
+    completed: task?.completed || false,
+  });
+  const [editingField, setEditingField] = useState(null);
 
   useEffect(() => {
     if (task) {
-      setTitle(task.title);
-      setDescription(task.description);
-      setCompleted(task.completed);
+      setFields({
+        title: task.title,
+        description: task.description,
+        completed: task.completed,
+      });
     }
   }, [task]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    await createTask(title, description);
-    resetForm();
+    await createTask(fields.title, fields.description);
+    setFields({ title: "", description: "", completed: false });
     updateTaskList();
   };
 
   const handleUpdate = async (field, value) => {
-    const updatedTask = { id: task.id, [field]: value };
-    await updateTask(updatedTask.id, updatedTask.title, updatedTask.description, updatedTask.completed);
+    const updatedTask = { ...fields, [field]: value };
+    await updateTask(task.id, updatedTask.title, updatedTask.description, updatedTask.completed);
     updateTaskList();
-    setEditingField(null); // Esci dalla modalità di modifica
+    setEditingField(null);
   };
 
   const handleDelete = async () => {
@@ -37,71 +43,92 @@ const TaskForm = ({ task, updateTaskList }) => {
     updateTaskList();
   };
 
-  const resetForm = () => {
-    setTitle("");
-    setDescription("");
-  };
-
-  const renderInput = (value, setter, placeholder) => (
-    <input
-      type="text"
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => setter(e.target.value)}
-      required
-    />
-  );
-
-  const renderTextarea = (value, setter) => (
-    <textarea
-      placeholder="Descrizione"
-      value={value}
-      onChange={(e) => setter(e.target.value)}
-    />
+  const renderField = (field, placeholder) => (
+    <div className="task-field">
+      {editingField === field ? (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleUpdate(field, fields[field]);
+          }}
+          className="editing-task-field"
+        >
+          {field === "description" ? (
+            <textarea
+              value={fields[field]}
+              onChange={(e) => setFields({ ...fields, [field]: e.target.value })}
+              placeholder={placeholder}
+            />
+          ) : (
+            <input
+              type="text"
+              value={fields[field]}
+              onChange={(e) => setFields({ ...fields, [field]: e.target.value })}
+              placeholder={placeholder}
+            />
+          )}
+          <button type="submit">Salva modifiche</button>
+        </form>
+      ) : (
+        <div className="task-field-display">
+          <span>{fields[field]}</span>
+          <FaPencil onClick={() => setEditingField(field)} />
+        </div>
+      )}
+    </div>
   );
 
   return (
-    <div>
+    <div className="task-container">
       {task ? (
-        <>
-          {editingField === "title" ? (
-            <form onSubmit={(e) => { e.preventDefault(); handleUpdate("title", title); }}>
-              {renderInput(title, setTitle, "Titolo")}
-            </form>
-          ) : (
-            <>
-              <h1><strong>{title}</strong></h1>
-              <FaPencil onClick={() => setEditingField("title")} />
-            </>
-          )}
-
-          {editingField === "description" ? (
-            <form onSubmit={(e) => { e.preventDefault(); handleUpdate("description", description); }}>
-              {renderTextarea(description, setDescription)}
-              <button type="submit">Salva modifiche</button>
-            </form>
-          ) : (
-            <>
-              <p>{description}</p>
-              <FaPencil onClick={() => setEditingField("description")} />
-            </>
-          )}
-
-          <label>
+        <div className="task-content">
+          <div className="task-title">
+            {renderField("title", "Titolo")}
+          </div>
+          <div className="task-description">
+            <span>Descrizione:</span>
+            <div className="description-box">
+              {renderField("description", "Descrizione")}
+            </div>
+          </div>
+          <div className="task-completed">
             <input
               type="checkbox"
-              checked={completed}
-              onChange={() => handleUpdate("completed", !completed)}
+              checked={fields.completed}
+              onChange={() =>
+                handleUpdate("completed", !fields.completed)
+              }
+              className="checkbox"
             />
-            Completato
-          </label>
-          <button onClick={handleDelete}>Elimina</button>
-        </>
+            <label>Completato</label>
+          </div>
+          <div className="delete-button">
+            <button onClick={handleDelete}>Elimina</button>
+          </div>
+        </div>
       ) : (
-        <form onSubmit={handleCreate}>
+        <form className="new-task-form" onSubmit={handleCreate}>
           <h1><strong>Aggiungi una nuova task</strong></h1>
-          {renderInput(title, setTitle, "Titolo")}
-          {renderTextarea(description, setDescription)}
+          <div className="new-task-field">
+            <input
+              type="text"
+              value={fields.title}
+              onChange={(e) =>
+                setFields({ ...fields, title: e.target.value })
+              }
+              placeholder="Titolo"
+              required
+            />
+          </div>
+          <div className="new-task-field">
+            <textarea
+              value={fields.description}
+              onChange={(e) =>
+                setFields({ ...fields, description: e.target.value })
+              }
+              placeholder="Descrizione"
+            />
+          </div>
           <button type="submit">Conferma</button>
         </form>
       )}

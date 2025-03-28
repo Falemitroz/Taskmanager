@@ -73,6 +73,19 @@ export const updateTask = async (taskId, title, description, completed) => {
   }
 };
 
+export const updateTaskStatus = async (taskId, completed) => {
+  try {
+    const res = await axios.patch(`${API_URL}/update-status/${taskId}`, 
+      { completed }, {
+      headers: getAuthHeaders(),
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Errore durante l'aggiornamento del task:", error);
+    throw error;
+  }
+};
+
 /**
  * Deletes a task
  */

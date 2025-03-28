@@ -1,47 +1,3 @@
-// const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
-// const User = require("../models/User");
-
-// // const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
-// const JWT_SECRET = 'secret';
-
-// exports.register = async (req, res) => {
-//     try {
-//         const { username, password } = req.body;
-        
-//         const existingUser = await User.findOne({ where: { username } });
-//         if(existingUser) {
-//             return res.status(400).json({ error: 'Utente già esistente.' });
-//         }
-        
-//         const hashedPassword = await bcrypt.hash(password, 10);
-//         const newUser = await User.create({ username, password: hashedPassword });
-
-
-//         res.status(200).json({ id: newUser.id, username: newUser.username, token });
-
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// };
-    
-// exports.login = async (req, res) => {
-//     try {
-//         const { username, password } = req.body;
-//         const user = await User.findOne({ where: { username } });
-//         if(!user){
-//             return res.status(404).json({ error: "Utente non trovato." });
-//         }
-//         if (!(await bcrypt.compare(password, user.password))) {
-//             return res.status(401).json({ error: "Password errata." });
-//         }
-//         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "1h" });
-//         res.status(200).json({ id: user.id, username: user.username, token });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// };
-
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
@@ -99,3 +55,12 @@ exports.login = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.logout = async (req, res) => {
+    try {
+        return res.status(200).json({ message: "Logout effettuato con successo" });
+    } catch (error) {
+        console.error("Errore durante il logout:", error);
+    return res.status(500).json({ message: "Errore del server" });
+    }
+}

@@ -1,75 +1,92 @@
-.task-list .task-enter {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  
-  .task-list .task-enter-active {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 500ms, transform 500ms;
-  }
-  
-  .task-list .task-exit {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  .task-list .task-exit-active {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 500ms, transform 500ms;
-  }
-  
-  .task-item {
-    background: #f8f9fa;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .task-item h3 {
-    margin: 0;
-    font-size: 1.2rem;
-  }
-  
-  .task-item p {
-    font-size: 1rem;
-  }
-  
-  .task-item button {
-    margin-top: 10px;
-    padding: 5px 10px;
-    cursor: pointer;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
-  }
-  
-  .task-item button:hover {
-    background-color: #0056b3;
-  }
-  
-  .task-item button:first-child {
-    background-color: #dc3545;
-  }
-  
-  .task-item button:first-child:hover {
-    background-color: #c82333;
+/* TaskList.css */
+
+/* Contenitore principale della lista dei task */
+.task-list-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 10px;
+  align-items: center;
+  gap: 2em;
+}
+
+.task-list-container h2 {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.task-list-container ul{
+  width: 70%;
+  list-style: none;
+}
+
+.task-list-container li {
+  padding: 1em;
+}
+
+/* Form di ricerca */
+.task-search-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.task-search-form svg {  /* Selezioniamo l'icona FaSearch */
+  margin-right: 10px;
+  color: #388E3C; 
+  font-size: 1.5rem; 
+}
+
+.task-search-input {
+  padding: 10px 20px;
+  font-size: 1rem;
+  width: 70%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.task-search-input:focus {
+  border-color: #388E3C; 
+  box-shadow: 0 0 5px rgba(56, 142, 60, 0.5);
+}
+
+/* Styling della lista */
+.task-list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 20px;
+}
+/* Quando non ci sono task */
+.no-tasks {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #888;
+}
+
+/* Styling per il loading */
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #388E3C;
+}
+
+/* Responsivo per dispositivi mobili */
+@media (max-width: 768px) {
+  .task-list-container {
+      padding: 20px;
   }
 
-  .progress-bar {
-    width: 100%;
-    height: 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    margin-bottom: 20px;
+  form input {
+      width: 100%;
+      max-width: 300px;
   }
-  
-  .progress-bar-inner {
-    height: 100%;
-    background-color: #4caf50;
-    border-radius: 5px;
+
+  ul li {
+      flex-direction: column;
+      align-items: flex-start;
   }
-  
+}

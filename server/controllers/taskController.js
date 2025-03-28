@@ -4,7 +4,7 @@ exports.create = async (req, res) => {
     console.log("Task Creato");
     try {
         const { title, description } = req.body;
-        const userId = req.user.userId;  // 🔹 Ottieni userId dal token
+        const userId = req.user.userId;  
 
         if (!userId) {
             return res.status(401).json({ error: "Non autorizzato" });
@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
 exports.getAll = async (req, res) => {
     console.log("Richesta ricevuta!");
     try {
-        const userId = req.user.userId;  // 🔹 Ottieni userId dal token
+        const userId = req.user.userId;  
 
         if (!userId) {
             return res.status(401).json({ error: "Non autorizzato" });
@@ -38,7 +38,7 @@ exports.getAll = async (req, res) => {
 exports.getByTitle = async (req, res) => {
     try {
         const { title } = req.params;
-        const userId = req.user.userId;  // 🔹 Ottieni userId dal token
+        const userId = req.user.userId; 
 
         if (!userId) {
             return res.status(401).json({ error: "Non autorizzato" });
@@ -63,7 +63,7 @@ exports.update = async (req, res) => {
     try {
         const { taskId } = req.params;
         const { title, description, completed } = req.body;
-        const userId = req.user.userId;  // 🔹 Ottieni userId dal token
+        const userId = req.user.userId;  
 
         if (!userId) {
             return res.status(401).json({ error: "Non autorizzato" });
@@ -75,11 +75,41 @@ exports.update = async (req, res) => {
             return res.status(404).json({ error: "Task non trovata o non autorizzato" });
         }
 
-        if (title) task.title = title;
-        if (description) task.description = description;
-        if (completed !== undefined) task.completed = completed;
+        if(title) task.title = title;
+        if(description) task.description = description;
+        if(completed !== undefined) task.completed = completed;
 
         await task.save();  
+
+        res.status(200).json({ message: "Task aggiornata", task });
+    } catch (error) {
+        console.error("Errore nell'aggiornamento della task:", error);
+        res.status(500).json({ error: "Errore nel server" });
+    }
+};
+
+exports.updateStatus = async (req, res) => {
+    try {
+
+        const { taskId } = req.params;
+        const { completed } = req.body;
+        const userId = req.user.userId; 
+        
+        if (!userId) {
+            return res.status(401).json({ error: "Non autorizzato" });
+        }
+        
+        const task = await Task.findOne({ where: { id: taskId, userId } });
+        
+        if (!task) {
+            return res.status(404).json({ error: "Task non trovata o non autorizzato" });
+        }
+        
+        task.completed = completed;
+        
+        await task.save();  
+        
+        console.log("🟩 Status aggiornato:", completed);
 
         res.status(200).json({ message: "Task aggiornata", task });
     } catch (error) {
@@ -91,7 +121,7 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     try {
         const { taskId } = req.params;
-        const userId = req.user.userId;  // 🔹 Ottieni userId dal token
+        const userId = req.user.userId;  
 
         if (!userId) {
             return res.status(401).json({ error: "Non autorizzato" });

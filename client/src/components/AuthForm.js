@@ -1,56 +1,60 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import AuthContext from "../context/AuthContext";
 import { FaUser, FaLock } from "react-icons/fa";
-import { RiCloseLargeLine } from "react-icons/ri";
-// import "../styles/AuthForm.css";
+import { IoMdCloseCircleOutline } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
+import "../styles/AuthForm.css"; // Assicurati di importare il CSS
 
-const AuthForm = ({ onClose, login, register }) => {
-  // Stato per la gestione della modalità (login/registrazione)
-  const [isLogin, setIsLogin] = useState(true);  // true -> login, false -> register
+const AuthForm = () => {
+  const { login, register } = useContext(AuthContext);
+  const [isLogin, setIsLogin] = useState(true);  
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   
-  // Funzione di submit
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (isLogin) {
-        // Logica per il login
         await login(username, password);
-        onClose();
+        navigate("/dashboard");
       } else {
-        // Logica per la registrazione
         await register(username, password);
-        onClose();
       }
     } catch (err) {
-      setError(err);
+      setError(err.message);
     }
   };
 
   return (
-    <div>
-      <div>
-        <RiCloseLargeLine onClick={onClose} />
+    <div className="auth-modal">
+      <div className="auth-form-container">
+        <IoMdCloseCircleOutline onClick={() => navigate("/")} className="close-btn"/>
         <h2>{isLogin ? 'Login' : 'Registrazione'}</h2>
         {error && <p>{error}</p>}
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-            required
-          />
-          <FaUser />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-          />
-          <FaLock />
+          <div className="input-container">
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
+              required
+            />
+            <FaUser className="icon"/>
+          </div>
+          <div className="input-container">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+            />
+            <FaLock className="icon"/>
+          </div>
           <button type="submit">{isLogin ? 'Accedi' : 'Registrati'}</button>
         </form>
         <p onClick={() => setIsLogin(!isLogin)}>
