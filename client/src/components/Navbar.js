@@ -13,25 +13,22 @@ const NavBar = () => {
 
   return (
     <nav className="navbar">
-      <a to="/" className="navbar-logo">
+      <a href="/" className="navbar-logo">
         <img src="/logo.png" alt="TaskManager Logo" />
       </a>
       
       <div className="navbar-menu">
-        {user.id ? (
-          <div className="user-menu">
-            <button className="user-btn" onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}>
+        <div className="user-menu">
+          <button className="user-btn" onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}>
               Benvenuto, {user.username}!
-            </button>
-            {isUserMenuOpen && (
-              <ul className="dropdown-menu">
-                <li onClick={handleLogout}>Logout</li>
-              </ul>
-            )}
-          </div>
-        ) : (
-          <a to="/authForm" className="btn btn-primary">Accedi</a>
-        )}
+          </button>
+          {isUserMenuOpen && (
+            <ul className="dropdown-menu">
+              <li onClick={handleLogout}>Logout</li>
+            </ul>
+          )}
+        </div>
+        }
       </div>
     </nav>
   );
