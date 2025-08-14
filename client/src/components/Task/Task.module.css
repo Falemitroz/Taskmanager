@@ -1,0 +1,99 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* checkbox | testo | delete */
+  gap: 0.5rem;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding: 0.5rem 0;
+  box-sizing: border-box; 
+  width: 100%;
+}
+
+/* Checkbox tonda con pallino */
+.checkbox {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  outline: none;
+  background-color: white;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.hiddenCheckbox {
+  width: 18px;
+  height: 18px;
+}
+
+/* Pallino quando selezionata */
+.checkbox::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.2s ease;
+}
+
+.checkbox:checked::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0; 
+}
+
+.text textarea,
+.text input {
+  background: none;
+  border: none;
+  width: 100%; 
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.text input {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.text textarea {
+  font-size: 1.2rem;
+  resize: none;
+}
+
+.text p {
+  max-height: 3.5em;
+}
+
+.delete {
+  cursor: pointer;
+}
+
+.delete:hover {
+  color: red;
+}
+
+/* Media Queries responsive */
+@media (max-width: 480px) {
+  .wrapper { gap: 0.2rem; padding: 0.35rem 0; }
+  .checkbox, .hiddenCheckbox { width: 12px; height: 12px; }
+  .checkbox::after { width: 5px; height: 5px; }
+  .text h2 { font-size: 1.2rem; }
+  .text input, .text textarea { font-size: 0.85rem; }
+  .text p { max-height: 2em; font-size: 0.8rem;}
+}

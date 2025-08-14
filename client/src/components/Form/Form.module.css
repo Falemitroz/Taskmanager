@@ -1,0 +1,66 @@
+.form {
+    position: fixed;
+    inset: 0; /* shorthand per top:0, left:0, right:0, bottom:0 */
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+    overflow-y: auto; /* scroll se il contenuto supera la viewport */
+    -webkit-overflow-scrolling: touch; /* scroll fluido su iOS */
+}
+
+.content {
+    background: white;
+    border-radius: 1em;
+    width: 100%;
+    max-width: 30rem;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    margin: auto; /* centra in entrambe le direzioni anche se scrolla */
+}
+
+.closeBtn {
+    background: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #333;
+}
+
+.closeBtn:hover {
+    background: none;
+    color: rgb(0, 138, 176);
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    width: 100%;
+    margin: auto;
+    padding-bottom: 2em;
+}
+
+.wrapper h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .content {
+        width: 95%; /* leggermente ridotta per respiro ai lati */
+        padding: 1rem;
+    }
+    .wrapper {
+        gap: 1em;
+        padding-bottom: 1.5em;
+    }
+    .wrapper h1 {
+        font-size: 1.2rem;
+    }
+    .closeBtn {
+        font-size: 1.5rem;
+    }
+}

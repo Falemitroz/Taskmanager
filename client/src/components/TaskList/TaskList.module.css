@@ -1,0 +1,98 @@
+/* Wrapper principale della TaskList */
+.wrapper {
+  margin: 1em;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  padding: 1rem;
+  text-align: start;
+  width: 100%;
+  max-width: 35rem;
+  height: 20rem;
+  box-sizing: border-box; /* Include padding e bordo nella larghezza */
+}
+
+/* Header con titolo e pulsanti */
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 1.5rem;
+  border-bottom: 3px solid #6c757d;
+  align-items: center;
+}
+
+/* Input in edit mode */
+.header input {
+  width: 100%;          /* Occupa tutta la larghezza disponibile */
+  max-width: 100%;      /* Non si espande oltre il wrapper */
+  box-sizing: border-box;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Icone delete/edit */
+.delete:hover {
+  color: red;
+}
+
+.edit:hover {
+  color: #388E3C;
+}
+
+/* Pulsante aggiungi task */
+.addTask {
+  display: block;
+  margin: 0 auto;
+  width: 2.5rem;
+  height: auto;
+  color: #388E3C;
+}
+
+/* Corpo della lista */
+.body {
+  margin-left: 1em;
+  min-height: 5rem; /* Spazio minimo anche se vuoto */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: scroll;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  font-size: 2rem;
+}
+/* Media Queries per dispositivi mobili */
+@media (max-width: 480px) {
+  .wrapper {
+    width: 90%;
+    max-width: 90%;
+    height: max-content;
+    max-height: 90vh;
+    gap: 1em;
+    padding: 0.7rem;
+  }
+
+  .header {
+    font-size: 1rem;
+  }
+
+  .header input {
+    font-size: 1rem;
+  }
+
+  .addTask {
+    width: 1.8rem;
+  }
+
+  .body {
+    margin-left: 0.5em;
+  }
+}

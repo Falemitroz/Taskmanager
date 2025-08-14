@@ -1,13 +1,18 @@
+require('dotenv').config(); // 👈 deve essere in cima o comunque prima di usare process.env
+
 const express = require('express');
 const cors = require('cors');
 const db = require('./models'); // Importa tutti i modelli e la connessione al database
+const path = require('path');
 
 const app = express();
+
+app.use(express.json()); 
 
 // ✅ LOG: Traccia ogni richiesta per debugging
 app.use((req, res, next) => {
   console.log(`🔥 Richiesta ricevuta: ${req.method} ${req.url}`);
-  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
   next();
 });
 
@@ -20,18 +25,23 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// ✅ Middleware per parsing JSON
-app.use(express.json());
 
 // ✅ Gestione esplicita delle richieste OPTIONS
 app.options("*", cors(corsOptions));
 
-// ✅ Import delle route
-const authRoutes = require("./routes/authRoutes");
+// ✅ Import delle routes
 const taskRoutes = require("./routes/taskRoutes");
+const taskListRoutes = require("./routes/taskListRoutes");
 
-app.use("/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/taskLists", taskListRoutes);
+
+// ✅ Serve la build React come frontend statico
+app.use(express.static(path.join(__dirname, "../client/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
+});
 
 // Test della connessione al database
 db.sequelize.authenticate()
@@ -39,9 +49,19 @@ db.sequelize.authenticate()
     .catch((err) => console.error('Unable to connect to the database:', err));
 
 // Sincronizzazione del database e dei modelli
-db.sequelize.sync({ force: false }) 
+db.sequelize.sync({ force: true }) 
     .then(() => console.log("Database & tables updated!"))
     .catch((err) => console.error("Error syncing database:", err));
+
+    
+// ✅ Serve la build React come frontend statico
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// ✅ Fallback: qualsiasi rotta non gestita dalle API restituisce index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
 
 // Avvio del server
 const PORT = 5001;
