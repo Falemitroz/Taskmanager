@@ -26,7 +26,7 @@ const TaskList = ({ title, taskListId, onChange }) => {
     } catch (error) {
       console.error("Errore durante il recupero dei task:", error);
     }
-  }, [getTasks]);
+  }, [getTasks, taskListId]);
   
   React.useEffect(() => {
     fetchTasks();
